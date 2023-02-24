@@ -10,6 +10,8 @@ module.exports = {
   //getting a single user by id
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
+      .select("-__v")
+      .populate(["thoughts", "friends"])
       .then((user) =>
         !user
           ? res.status(404).json({ message: "There is no user with this id" })
