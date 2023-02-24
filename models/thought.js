@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const reactionSchema = new mongoose.Schema({
+const reactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
     default: () => new Types.ObjectId(),
@@ -10,7 +10,7 @@ const reactionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, get: (date) => timeSince(date) },
 });
 
-const thoughtSchema = new mongoose.Schema({
+const thoughtSchema = new Schema({
   thoughtText: { type: String, required: true, minLength: 1, maxLength: 120 },
   createdAt: { type: Date, default: Date.now, get: (date) => timeSince(date) },
   userName: { type: String, required: true },
@@ -21,6 +21,6 @@ thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
-const Thought = mongoose.model("Thought", thoughtSchema);
+const Thought = model("Thought", thoughtSchema);
 
 module.exports = Thought;
