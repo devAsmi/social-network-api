@@ -10,7 +10,7 @@ module.exports = {
 
   //getting a single thought by _id
   getSingleThought(req, res) {
-    Thought.findOne({ _id: req.params.ThoughtId }).then((thought) =>
+    Thought.findOne({ _id: req.params.thoughtId }).then((thought) =>
       !thought
         ? res.status(404).json({ message: "There is no thought with this id" })
         : res.json(thought)
@@ -31,7 +31,6 @@ module.exports = {
       })
       .catch((err) => res.status(500).json(err));
   },
-
   updateThought(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
@@ -69,5 +68,52 @@ module.exports = {
             ).then(() => res.json(thought))
       )
       .catch((err) => res.status(500).json(err));
+  },
+  createReactionForThought(req, res) {
+    // logic to add a reaction to the thought
+    Thought.findOneAndUpdate(
+      {
+        _id: req.params.thoughtId,
+      },
+      {
+        $push: { reactions: req.body },
+      },
+      { new: true }
+    )
+      .then((thought) => {
+        if (thought) {
+          res.json(thought);
+        } else {
+          res.status(404).send();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json(err);
+      });
+  },
+
+  deleteReactionForThought(req, res) {
+    // logic to delete a reaction from the thought
+    Thought.findOneAndUpdate(
+      {
+        _id: req.params.thoughtId,
+      },
+      {
+        $pull: { reactions: { _id: req.params.reactionsId } },
+      },
+      { new: true }
+    )
+      .then((thought) => {
+        if (thought) {
+          res.json(thought);
+        } else {
+          res.status(404).send();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json(err);
+      });
   },
 };
